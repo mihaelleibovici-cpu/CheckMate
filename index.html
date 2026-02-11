@@ -45,33 +45,32 @@
             const res = document.getElementById('results');
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>טוען מחירים חיים משרת גוגל...</p>";
 
             try {
-                // שימוש בצינור הכי יציב (Proxy) - הפעם עם מנגנון שמונע חסימה חוזרת
                 const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}&timestamp=${new Date().getTime()}`);
+                // שימוש בצינור הכי חזק שיש (Corsproxy.io) בשיטה ישירה
+                const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(api)}`);
                 const data = await response.json();
-                const results = JSON.parse(data.contents);
 
-                if (results.shopping_results) {
-                    const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
+                if (data.shopping_results) {
+                    const sorted = data.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
                     res.innerHTML = "";
                     sorted.slice(0, 10).forEach((item, i) => {
                         const isMin = i === 0;
                         res.innerHTML += `
                             <div class="product-item ${isMin ? 'cheapest' : ''}">
-                                <strong>${item.title}</strong>
+                                <strong style="font-size:18px;">${item.title}</strong>
                                 <div style="color:#666; font-size:14px; margin-top:5px;">חנות: ${item.source}</div>
                                 <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
                                 <a href="${item.link}" target="_blank" class="buy-link">עבור לחנות</a>
                             </div>`;
                     });
                 } else {
-                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה שוב.</p>";
+                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה חיפוש אחר.</p>";
                 }
             } catch (e) {
-                res.innerHTML = "<p style='text-align:center;'>שגיאת תקשורת קלה. נסה ללחוץ שוב בעוד כמה שניות.</p>";
+                res.innerHTML = "<p style='text-align:center;'>עומס קל. לחץ שוב על כפתור החיפוש.</p>";
             }
         }
     </script>
