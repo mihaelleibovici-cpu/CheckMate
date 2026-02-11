@@ -16,7 +16,7 @@
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-top: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: right; }
         .cheapest { border: 2px solid var(--success) !important; border-right: 8px solid var(--success) !important; background: #f0fff4; }
         .price-tag { color: var(--success); font-size: 32px; font-weight: 800; display: block; margin: 10px 0; }
-        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; box-sizing: border-box; cursor: pointer; }
+        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; box-sizing: border-box; cursor: pointer; border: none; font-size: 18px; }
         .cheapest .buy-link { background: var(--success); }
         .footer { background: var(--dark); color: white; padding: 40px 20px; text-align: center; margin-top: 30px; }
         .btn-donate { background: var(--paypal); color: #000; padding: 15px 40px; border-radius: 12px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; font-size: 20px; }
@@ -46,39 +46,35 @@
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>סורק את כל החנויות עבורך...</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
 
             const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
-            const proxies = [
-                `https://api.allorigins.win/get?url=${encodeURIComponent(api)}`,
-                `https://corsproxy.io/?${encodeURIComponent(api)}`
-            ];
+            
+            try {
+                // שימוש בצינור הכי יציב לעקיפת שגיאת החיבור
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}&ts=${Date.now()}`);
+                const data = await response.json();
+                const results = JSON.parse(data.contents);
 
-            for (let url of proxies) {
-                try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    const results = data.contents ? JSON.parse(data.contents) : data;
-
-                    if (results.shopping_results && results.shopping_results.length > 0) {
-                        const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
-                        res.innerHTML = "";
-                        sorted.slice(0, 10).forEach((item, i) => {
-                            const isMin = i === 0;
-                            // שימוש בקישור ישיר עם אבטחה מופחתת כדי למנוע חסימת דפדפן בטלפון
-                            res.innerHTML += `
-                                <div class="product-item ${isMin ? 'cheapest' : ''}">
-                                    <strong>${item.title}</strong>
-                                    <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
-                                    <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                    <a href="${item.link}" rel="noreferrer" class="buy-link">עבור לחנות</a>
-                                </div>`;
-                        });
-                        return; 
-                    }
-                } catch (e) { console.log("שרת עמוס..."); }
+                if (results.shopping_results && results.shopping_results.length > 0) {
+                    const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
+                    res.innerHTML = "";
+                    sorted.slice(0, 10).forEach((item, i) => {
+                        const isMin = i === 0;
+                        res.innerHTML += `
+                            <div class="product-item ${isMin ? 'cheapest' : ''}">
+                                <strong>${item.title}</strong>
+                                <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
+                                <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
+                                <button onclick="window.location.assign('${item.link}')" class="buy-link">עבור לחנות</button>
+                            </div>`;
+                    });
+                } else {
+                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה שוב.</p>";
+                }
+            } catch (e) {
+                res.innerHTML = "<p style='text-align:center;'>שגיאת חיבור. נסה ללחוץ שוב על כפתור החיפוש.</p>";
             }
-            res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה שוב בעוד רגע.</p>";
         }
     </script>
 </body>
