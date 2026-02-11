@@ -16,7 +16,7 @@
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-top: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: right; }
         .cheapest { border: 2px solid var(--success) !important; border-right: 8px solid var(--success) !important; background: #f0fff4; }
         .price-tag { color: var(--success); font-size: 32px; font-weight: 800; display: block; margin: 10px 0; }
-        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; box-sizing: border-box; cursor: pointer; }
         .cheapest .buy-link { background: var(--success); }
         .footer { background: var(--dark); color: white; padding: 40px 20px; text-align: center; margin-top: 30px; }
         .btn-donate { background: var(--paypal); color: #000; padding: 15px 40px; border-radius: 12px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; font-size: 20px; }
@@ -40,18 +40,13 @@
     </footer>
 
     <script>
-        function openLink(url) {
-            // מעבר דף כפוי באותו חלון כדי למנוע שגיאת 404
-            window.top.location.href = url;
-        }
-
         async function run() {
             const q = document.getElementById('q').value;
             const res = document.getElementById('results');
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>סורק את כל החנויות עבורך...</p>";
 
             const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
             const proxies = [
@@ -70,17 +65,18 @@
                         res.innerHTML = "";
                         sorted.slice(0, 10).forEach((item, i) => {
                             const isMin = i === 0;
+                            // שימוש בקישור ישיר עם אבטחה מופחתת כדי למנוע חסימת דפדפן בטלפון
                             res.innerHTML += `
                                 <div class="product-item ${isMin ? 'cheapest' : ''}">
                                     <strong>${item.title}</strong>
                                     <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
                                     <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                    <button onclick="openLink('${item.link}')" class="buy-link">עבור לחנות</button>
+                                    <a href="${item.link}" rel="noreferrer" class="buy-link">עבור לחנות</a>
                                 </div>`;
                         });
                         return; 
                     }
-                } catch (e) { console.log("עומס..."); }
+                } catch (e) { console.log("שרת עמוס..."); }
             }
             res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה שוב בעוד רגע.</p>";
         }
