@@ -33,21 +33,23 @@
         <div id="loading" class="loader">המוח של מיכאל סורק את הרשת...</div>
         <div id="results"></div>
     </div>
+    <div style="margin-top: 20px; font-size: 12px; color: #999;">© כל הזכויות שמורות למיכאל</div>
 
     <script>
         async function search() {
             const q = document.getElementById('query').value;
             const resDiv = document.getElementById('results');
             const loader = document.getElementById('loading');
-            const key = '48496d76c800255d0d804ca2ebecf65a1a126329658639557032cae83d9f87cb';
+            // המפתח החדש שלך מעודכן כאן
+            const key = 'D37108bcda469d2d1344f146ca834b1ed9267b4cf65ceafb6c481acecd732de6';
 
             if (!q) { alert("נא להזין שם מוצר"); return; }
             resDiv.innerHTML = "";
             loader.style.display = "block";
 
             try {
-                // שימוש במתווך עוקף חסימות אבטחה
                 const target = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&api_key=${key}&hl=he&gl=il`;
+                // שימוש במתווך אמין כדי לעקוף חסימות אבטחה בטלפון
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
                 const json = await response.json();
                 const data = JSON.parse(json.contents);
@@ -58,23 +60,21 @@
                     data.shopping_results.slice(0, 10).forEach(item => {
                         resDiv.innerHTML += `
                             <div class="item">
-                                <img src="${item.thumbnail}">
+                                <img src="${item.thumbnail}" onerror="this.src='https://via.placeholder.com/75'">
                                 <div style="flex:1">
                                     <strong>${item.source}</strong><br>
                                     <span style="font-size:14px;">${item.title.substring(0, 45)}...</span>
                                     <div class="price">${item.price}</div>
-                                    <a href="${item.link}" target="_blank" class="link">לקנייה</a>
+                                    <a href="${item.link}" target="_blank" class="link">לקנייה בחנות</a>
                                 </div>
                             </div>`;
                     });
-                } else if (data.error) {
-                    resDiv.innerHTML = "<p>שגיאת שרת: " + data.error + "</p>";
                 } else {
-                    resDiv.innerHTML = "<p>לא נמצאו תוצאות. נסה מוצר אחר.</p>";
+                    resDiv.innerHTML = "<p>לא נמצאו תוצאות. וודא שהחשבון ב-SerpApi פעיל.</p>";
                 }
             } catch (e) {
                 loader.style.display = "none";
-                alert("מנוע החיפוש מתעורר. נסה ללחוץ שוב על 'חפש עכשיו' בעוד כמה שניות.");
+                alert("מנוע החיפוש מתעדכן. נסה שוב בעוד דקה.");
             }
         }
     </script>
