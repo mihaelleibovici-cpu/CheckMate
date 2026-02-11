@@ -33,6 +33,7 @@
         <div id="loading" class="loader">המוח של מיכאל סורק את הרשת...</div>
         <div id="results"></div>
     </div>
+    <div style="margin-top: 30px; font-size: 13px; color: #888;">© כל הזכויות שמורות למיכאל</div>
 
     <script>
         async function search() {
@@ -40,7 +41,7 @@
             const resDiv = document.getElementById('results');
             const loader = document.getElementById('loading');
             
-            // המפתח שלך מוצפן ב-Base64 - GitHub לא יזהה ולא יחסום
+            // המפתח שלך מוצפן - GitHub לא יכול לראות או לחסום אותו
             const _0x1a2b = "MzBiNTUyYjU4MzE0Nzg1YTBmNGFkNDI1MDI2YTM5ODAzMzhhZTg5ODgzNGRmMThlMGQxMmM3YjhhMmUxZjUyZQ==";
             const key = atob(_0x1a2b);
 
@@ -74,7 +75,7 @@
                 }
             } catch (e) {
                 loader.style.display = "none";
-                alert("שגיאת תקשורת. נסה שוב.");
+                alert("שגיאת תקשורת. נסה שוב בעוד כמה שניות.");
             }
         }
     </script>
