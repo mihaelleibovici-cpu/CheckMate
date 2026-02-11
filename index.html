@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricency - השוואת מחירים עולמית</title>
+    <title>Pricency</title>
     <style>
         :root { --primary: #3b82f6; --success: #28a745; --dark: #2d2d2d; --bg: #f8f9fa; --paypal: #ffc107; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; direction: rtl; }
@@ -25,17 +25,15 @@
 <body>
     <header class="header">
         <h1>Pricency</h1>
-        <div style="margin-top:5px; opacity:0.9; font-size:18px;">נוצר על ידי מיכאל - השוואה בין הארץ לעולם</div>
+        <div style="margin-top:5px; opacity:0.9; font-size:18px;">נוצר על ידי מיכאל - השוואה מהירה</div>
     </header>
-
     <main class="main-content">
         <section class="search-card">
-            <input type="text" id="userQuery" placeholder="איזה מוצר להשוות לך?">
+            <input type="text" id="userQuery" placeholder="חפש מוצר בזול...">
             <button class="btn-search" onclick="runBrain()">חפש את הכי זול</button>
         </section>
         <div id="resultsList" class="results-container"></div>
     </main>
-
     <footer class="footer">
         <p>© כל הזכויות שמורות למיכאל</p>
         <a href="https://paypal.me/iareah" target="_blank" class="btn-donate">תרומה ב-PayPal</a>
@@ -48,51 +46,44 @@
             const apiKey = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!query) return;
 
-            resultsList.innerHTML = "<p style='text-align:center;'>סורק את כל האתרים בארץ ובחו\"ל...</p>";
+            resultsList.innerHTML = "<p style='text-align:center;'>סורק מחירים בזמן אמת...</p>";
 
+            const targetUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&hl=he&gl=il&api_key=${apiKey}`;
+            
             try {
-                // ה-API מושך תוצאות מ-Google Shopping שכוללות את KSP, אייבורי, אמזון ועוד
-                const apiUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&hl=he&gl=il&api_key=${apiKey}`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`);
-                const json = await response.json();
-                const data = JSON.parse(json.contents);
+                // שימוש במעקף CORS יציב יותר
+                const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
+                const data = await response.json();
 
                 if (data.shopping_results && data.shopping_results.length > 0) {
-                    // המיון שמוודא שהכי זול באמת מופיע ראשון
                     const sorted = data.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
-                    
                     resultsList.innerHTML = "";
-                    sorted.slice(0, 15).forEach((item, index) => {
+                    sorted.slice(0, 10).forEach((item, index) => {
                         const isCheapest = index === 0;
                         resultsList.innerHTML += `
                             <div class="product-item ${isCheapest ? 'cheapest' : ''}">
                                 <strong>${isCheapest ? '🏆 המחיר המשתלם ביותר: ' : ''}${item.title}</strong><br>
                                 <small style="color:#666;">חנות: ${item.source}</small>
                                 <div class="price-tag">₪${item.extracted_price || 'בדוק מחיר'}</div>
-                                <a href="${item.link}" target="_blank" class="buy-link" style="background:${isCheapest ? '#28a745' : '#343a40'}">
-                                    ${isCheapest ? 'קנה עכשיו בחיסכון מקסימלי' : 'עבור לחנות'}
-                                </a>
+                                <a href="${item.link}" target="_blank" class="buy-link" style="background:${isCheapest ? '#28a745' : '#343a40'}">עבור לחנות</a>
                             </div>`;
                     });
-                    return;
+                } else {
+                    throw new Error("No results");
                 }
-            } catch (e) { console.log("API Error"); }
-
-            // גיבוי לחיפוש ידני באתרים ספציפיים בארץ אם ה-API לא עונה
-            const stores = [
-                { name: "AliExpress", url: `https://www.aliexpress.com/wholesale?SearchText=${query}` },
-                { name: "KSP (ישראל)", url: `https://ksp.co.il/web/cat?search=${query}` },
-                { name: "Ivory (ישראל)", url: `https://www.ivory.co.il/catalogsearch/result/?q=${query}` },
-                { name: "Alibaba", url: `https://www.alibaba.com/trade/search?SearchText=${query}` }
-            ];
-            resultsList.innerHTML = "<p style='text-align:center;'>לא הצלחנו למשוך מחירים אוטומטית. בצע חיפוש ישיר:</p>";
-            stores.forEach(store => {
-                resultsList.innerHTML += `
-                    <div class="product-item">
-                        <strong>${store.name}</strong>
-                        <a href="${store.url}" target="_blank" class="buy-link" style="margin-top:10px;">חפש ב-${store.name}</a>
-                    </div>`;
-            });
+            } catch (e) {
+                // הצגת אתרים במידה והחיפוש האוטומטי נכשל
+                resultsList.innerHTML = "<p style='text-align:center;'>לא הצלחנו למשוך מחירים אוטומטית. נסה את האתרים הבאים:</p>";
+                const stores = [
+                    { name: "AliExpress", url: `https://www.aliexpress.com/wholesale?SearchText=${query}` },
+                    { name: "KSP (ישראל)", url: `https://ksp.co.il/web/cat?search=${query}` },
+                    { name: "Amazon", url: `https://www.amazon.com/s?k=${query}` },
+                    { name: "Alibaba", url: `https://www.alibaba.com/trade/search?SearchText=${query}` }
+                ];
+                stores.forEach(store => {
+                    resultsList.innerHTML += `<div class="product-item"><strong>${store.name}</strong><a href="${store.url}" target="_blank" class="buy-link" style="margin-top:10px;">חפש ב-${store.name}</a></div>`;
+                });
+            }
         }
     </script>
 </body>
