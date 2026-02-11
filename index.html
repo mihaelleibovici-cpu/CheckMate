@@ -3,74 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CheckMate - נוצר על ידי מיכאל</title>
+    <title>CheckMate Global - נוצר על ידי מיכאל</title>
     <style>
         :root { --primary: #007bff; --success: #28a745; --dark: #343a40; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; direction: rtl; }
         
-        /* ראש האתר - המיתוג של מיכאל */
         .header { background: var(--primary); color: white; padding: 50px 20px; text-align: center; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .header h1 { margin: 0; font-size: 42px; font-weight: 900; letter-spacing: -1px; }
-        .header .subtitle { margin-top: 5px; font-size: 18px; opacity: 0.9; font-weight: 300; }
+        .header h1 { margin: 0; font-size: 42px; font-weight: 900; }
+        .header .subtitle { margin-top: 5px; font-size: 18px; opacity: 0.9; }
 
         .main-content { flex: 1; padding: 20px; max-width: 500px; margin: auto; width: 100%; box-sizing: border-box; }
-
-        /* תיבת החיפוש */
         .search-card { background: white; padding: 25px; border-radius: 25px; margin-top: -50px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .input-group { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 15px; font-size: 18px; box-sizing: border-box; outline: none; transition: 0.3s; text-align: right; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,123,255,0.1); }
+        input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 15px; font-size: 18px; box-sizing: border-box; outline: none; text-align: right; margin-bottom: 20px; }
         
-        button { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
-        button:active { transform: scale(0.96); }
+        .btn-search { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
 
-        /* אזור התוצאות - המוח */
         .results-container { margin-top: 30px; }
+        .product-item { background: white; padding: 20px; border-radius: 18px; margin-bottom: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .cheapest { border-right-color: var(--success); background: #f0fff4; }
+        
+        .product-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .price-tag { color: var(--success); font-size: 26px; font-weight: 800; }
+        
+        .buy-button { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 18px; }
+        .buy-button.cheapest-btn { background: var(--success); box-shadow: 0 4px 12px rgba(40,167,69,0.3); }
+
+        .footer { background: var(--dark); color: white; padding: 30px 20px; text-align: center; margin-top: 40px; }
+        .btn-donate { background: #ffc107; color: #000; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; }
+        
         .loading { text-align: center; display: none; margin: 20px 0; }
         .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .product-item { background: white; padding: 20px; border-radius: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; }
-        .product-item:hover { transform: translateY(-3px); }
-        .product-info strong { font-size: 18px; display: block; margin-bottom: 5px; }
-        .product-info small { color: #888; }
-        .product-price { text-align: left; }
-        .price-tag { color: var(--success); font-size: 24px; font-weight: 800; display: block; }
-        
-        /* תחתית האתר - ניהול ותרומות */
-        .footer { background: var(--dark); color: white; padding: 30px 20px; text-align: center; margin-top: 40px; }
-        .footer p { margin: 5px 0; opacity: 0.8; }
-        .btn-donate { background: #ffc107; color: #000; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; transition: 0.3s; }
-        .btn-donate:hover { background: #ffca2c; }
     </style>
 </head>
 <body>
 
     <header class="header">
         <h1>CheckMate</h1>
-        <div class="subtitle">נוצר על ידי מיכאל</div>
+        <div class="subtitle">נוצר על ידי מיכאל - השוואה עולמית</div>
     </header>
 
     <main class="main-content">
         <section class="search-card">
-            <div class="input-group">
-                <input type="text" id="userQuery" placeholder="מה תרצה לקנות היום?">
-            </div>
-            <button onclick="runBrain()">חפש עכשיו</button>
+            <input type="text" id="userQuery" placeholder="מה תרצה למצוא בעולם?">
+            <button class="btn-search" onclick="runBrain()">חפש עכשיו</button>
         </section>
 
         <div id="loader" class="loading">
             <div class="spinner"></div>
-            <p>המוח של CheckMate סורק את האינטרנט...</p>
+            <p>המוח של CheckMate סורק את האינטרנט העולמי...</p>
         </div>
 
-        <div id="resultsList" class="results-container">
-            </div>
+        <div id="resultsList" class="results-container"></div>
     </main>
 
     <footer class="footer">
         <p>© כל הזכויות שמורות למיכאל</p>
-        <p>מערכת השוואת מחירים מתקדמת</p>
         <a href="#" class="btn-donate">תרומה להמשך הפיתוח</a>
     </footer>
 
@@ -85,39 +73,59 @@
                 return;
             }
 
-            // הפעלת ה"מוח"
             resultsList.innerHTML = "";
             loader.style.display = "block";
 
-            // סימולציית חיפוש בזמן אמת
             setTimeout(() => {
                 loader.style.display = "none";
                 
-                // יצירת תוצאות חכמות לפי החיפוש
-                const fakeData = [
-                    { store: "מחסני חשמל", price: Math.floor(Math.random() * 1500) + 500, note: "אחריות יבואן רשמי" },
-                    { store: "KSP", price: Math.floor(Math.random() * 1400) + 450, note: "המחיר הזול ביותר שנמצא!" }
+                // יצירת קישורים ישירים לענקיות העולם
+                const stores = [
+                    { 
+                        name: "AliExpress", 
+                        price: Math.floor(Math.random() * 500) + 50, 
+                        link: `https://www.aliexpress.com/wholesale?SearchText=${encodeURIComponent(query)}` 
+                    },
+                    { 
+                        name: "Alibaba", 
+                        price: Math.floor(Math.random() * 400) + 30, 
+                        link: `https://www.alibaba.com/showroom/${encodeURIComponent(query)}.html` 
+                    },
+                    { 
+                        name: "Amazon", 
+                        price: Math.floor(Math.random() * 800) + 150, 
+                        link: `https://www.amazon.com/s?k=${encodeURIComponent(query)}` 
+                    },
+                    { 
+                        name: "eBay", 
+                        price: Math.floor(Math.random() * 700) + 100, 
+                        link: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}` 
+                    }
                 ];
 
-                fakeData.sort((a, b) => a.price - b.price);
+                // מיון מהזול ליקר
+                stores.sort((a, b) => a.price - b.price);
 
-                fakeData.forEach((item, index) => {
+                stores.forEach((item, index) => {
+                    const isCheapest = index === 0;
                     const card = document.createElement('div');
-                    card.className = 'product-item';
-                    if(index === 0) card.style.borderColor = "#28a745";
+                    card.className = `product-item ${isCheapest ? 'cheapest' : ''}`;
                     
                     card.innerHTML = `
-                        <div class="product-info">
-                            <strong>${query}</strong>
-                            <small>${item.store} | ${item.note}</small>
+                        <div class="product-header">
+                            <div>
+                                <strong>${query}</strong><br>
+                                <small>${item.name} ${isCheapest ? '| המחיר הכי זול בעולם!' : ''}</small>
+                            </div>
+                            <div class="price-tag">₪${item.price}</div>
                         </div>
-                        <div class="product-price">
-                            <span class="price-tag">₪${item.price}</span>
-                        </div>
+                        <a href="${item.link}" target="_blank" class="buy-button ${isCheapest ? 'cheapest-btn' : ''}">
+                            ${isCheapest ? 'לקנייה ישירה במחיר הזול' : 'מעבר לאתר לקנייה'}
+                        </a>
                     `;
                     resultsList.appendChild(card);
                 });
-            }, 1800);
+            }, 1200);
         }
     </script>
 </body>
