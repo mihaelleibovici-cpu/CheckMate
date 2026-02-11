@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckMate | עמוד מוצר חכם</title>
+    <style>
+        :root { --main-blue: #1e40af; --accent-red: #ef4444; --bg-dark: #0f172a; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-dark); color: white; line-height: 1.6; }
+        
+        .header { background: linear-gradient(135deg, var(--main-blue), #1e3a8a); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; }
+
+        .container { padding: 20px; max-width: 500px; margin: auto; }
+
+        /* כרטיס הבחירה של מיכאל */
+        .product-hero { background: #1e293b; border-radius: 20px; overflow: hidden; border: 2px solid var(--accent-red); margin-bottom: 25px; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2); }
+        .hero-badge { background: var(--accent-red); color: white; padding: 8px; text-align: center; font-weight: bold; font-size: 14px; }
+        .product-img { width: 100%; height: 250px; background: #334155; display: flex; align-items: center; justify-content: center; font-size: 50px; }
+        
+        .product-info { padding: 20px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .price { font-size: 32px; font-weight: bold; color: #38bdf8; }
+        
+        /* הסבר בעברית - מה שביקשת */
+        .explanation-box { background: rgba(56, 189, 248, 0.1); border-right: 4px solid #38bdf8; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .explanation-box h3 { margin-top: 0; color: #38bdf8; font-size: 18px; }
+
+        .specs-list { list-style: none; padding: 0; margin: 20px 0; }
+        .specs-list li { margin-bottom: 10px; display: flex; align-items: center; font-size: 15px; }
+        .specs-list li::before { content: '✅'; margin-left: 10px; }
+
+        .action-btn { background: #38bdf8; color: #0f172a; border: none; padding: 18px; border-radius: 12px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .action-btn:hover { background: #7dd3fc; }
+
+        .donation-footer { text-align: center; margin-top: 30px; padding: 20px; border-top: 1px solid #334155; }
+        .bit-btn { background: #ff5a00; color: white; border: none; padding: 10px 20px; border-radius: 50px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>CHECKMATE</h1>
+    <small>BY MICHAEL</small>
+</div>
+
+<div class="container">
+    <div class="product-hero">
+        <div class="hero-badge">נבחר על ידי המערכת של מיכאל - הכי משתלם בעולם</div>
+        <div class="product-img">📦</div> <div class="product-info">
+            <span style="color: #94a3b8; font-size: 14px;">נמצא ב-Amazon (סריקה עולמית)</span>
+            <h2 style="margin: 5px 0;">נעלי ריצה מקצועיות - דגם 2026</h2>
+            
+            <div class="price-row">
+                <div class="price">349 ₪</div>
+                <div style="text-decoration: line-through; color: #64748b;">450 ₪</div>
+            </div>
+
+            <div class="explanation-box">
+                <h3>למה כדאי לך? (הסבר CheckMate)</h3>
+                <p>המוצר הזה נבחר כי הוא מציע את השילוב הכי טוב בין מחיר נמוך לאמינות גבוהה. המוכר מדורג בציון מקסימלי, והמשלוח לישראל הוא המהיר ביותר שקיים כרגע בחינם.</p>
+            </div>
+
+            <ul class="specs-list">
+                <li>תרגום מלא של המפרט לעברית</li>
+                <li>כולל אחריות בינלאומית</li>
+                <li>משלוח חינם לנקודת איסוף</li>
+            </ul>
+
+            <button class="action-btn">לרכישה מאובטחת בעברית</button>
+        </div>
+    </div>
+
+    <div class="donation-footer">
+        <p>נהנית מהשירות? עזור לנו להישאר עצמאיים</p>
+        <button class="bit-btn">תרומה מהירה ב-Bit</button>
+    </div>
+</div>
+
+</body>
+</html>
