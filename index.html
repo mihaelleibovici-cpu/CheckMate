@@ -30,7 +30,7 @@
     <main class="main-content">
         <section class="search-card">
             <input type="text" id="q" placeholder="מה תרצה לקנות בזול?">
-            <button class="btn-search" id="searchBtn" onclick="run()">חפש את המחיר הכי זול</button>
+            <button class="btn-search" onclick="run()">חפש את המחיר הכי זול</button>
         </section>
         <div id="results"></div>
     </main>
@@ -40,39 +40,41 @@
     </footer>
 
     <script>
-        async function run() {
+        function run() {
             const q = document.getElementById('q').value;
             const res = document.getElementById('results');
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים בזמן אמת...</p>";
 
-            try {
-                // שימוש בצינור הכי יציב (Proxy) למניעת שגיאות חיבור
-                const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}`);
-                const json = await response.json();
-                const data = JSON.parse(json.contents);
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
 
-                if (data.shopping_results) {
-                    const sorted = data.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
-                    res.innerHTML = "";
-                    sorted.slice(0, 10).forEach((item, i) => {
-                        const isMin = i === 0;
-                        res.innerHTML += `
-                            <div class="product-item ${isMin ? 'cheapest' : ''}">
-                                <strong style="font-size:18px;">${item.title}</strong>
-                                <div style="color:#666; font-size:14px; margin-top:5px;">חנות: ${item.source}</div>
-                                <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                <a href="${item.link}" target="_blank" class="buy-link">עבור לחנות</a>
-                            </div>`;
-                    });
-                } else {
-                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה חיפוש אחר.</p>";
-                }
-            } catch (e) {
-                res.innerHTML = "<p style='text-align:center;'>עומס זמני בחיפוש. אנא נסה ללחוץ שוב בעוד 2 שניות.</p>";
-            }
+            // שימוש בצינור יציב במיוחד (Cloudflare) שלא נחסם במובייל
+            const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
+            
+            fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const results = JSON.parse(data.contents);
+                    if (results.shopping_results) {
+                        const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
+                        res.innerHTML = "";
+                        sorted.slice(0, 10).forEach((item, i) => {
+                            const isMin = i === 0;
+                            res.innerHTML += `
+                                <div class="product-item ${isMin ? 'cheapest' : ''}">
+                                    <strong style="font-size:18px;">${item.title}</strong>
+                                    <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
+                                    <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
+                                    <a href="${item.link}" target="_blank" class="buy-link">עבור לחנות</a>
+                                </div>`;
+                        });
+                    } else {
+                        res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה חיפוש אחר.</p>";
+                    }
+                })
+                .catch(() => {
+                    res.innerHTML = "<p style='text-align:center;'>שגיאת עומס. אנא המתן 5 שניות ולחץ שוב.</p>";
+                });
         }
     </script>
 </body>
