@@ -3,71 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricency - השוואת מחירים חכמה</title>
+    <title>Pricency - הכי זול בעולם</title>
     <style>
-        :root { --primary: #007bff; --bg: #f4f7f6; --paypal: #ffc439; }
-        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; text-align: center; }
-        header { background: white; padding: 30px; border-bottom: 5px solid var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .profile-tag { color: #666; font-weight: bold; margin-top: 10px; }
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-        .search-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 12px; font-size: 18px; box-sizing: border-box; }
-        .btn-search { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; }
-        .results { margin-top: 25px; }
-        .store-card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; border-right: 5px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .price { color: #28a745; font-weight: bold; }
-        .donation-box { margin-top: 50px; padding: 20px; background: white; border-radius: 20px; border: 1px solid #ddd; }
-        .paypal-button { display: inline-block; background: var(--paypal); color: #003087; padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 18px; border: 1px solid #d4a62c; margin-top: 15px; }
-        footer { margin-top: 30px; padding: 20px; color: #888; font-size: 0.9rem; }
+        :root { --primary: #2d70fd; --success: #28a745; --dark: #343a40; --bg: #f4f7f6; --paypal: #ffc107; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; direction: rtl; }
+        .header { background: white; padding: 30px 20px; text-align: center; border-bottom: 4px solid var(--primary); }
+        .header h1 { margin: 0; font-size: 45px; font-weight: 900; }
+        .main-content { flex: 1; padding: 20px; max-width: 450px; margin: auto; width: 100%; box-sizing: border-box; }
+        .search-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; }
+        input { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 12px; font-size: 18px; box-sizing: border-box; margin-bottom: 15px; text-align: center; }
+        .btn-search { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; }
+        .results-container { margin-top: 25px; }
+        .product-item { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #eee; transition: 0.3s; }
+        .cheapest { border: 3px solid var(--success) !important; background: #f0fff4; }
+        .price-tag { color: var(--success); font-weight: 800; font-size: 24px; display: block; margin: 10px 0; }
+        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; }
+        .cheapest-btn { background: var(--success); }
+        .footer-card { background: white; padding: 20px; border-radius: 20px; margin-top: 20px; text-align: center; }
+        .btn-donate { background: var(--paypal); color: #000; padding: 15px; border-radius: 50px; text-decoration: none; font-weight: bold; display: block; margin-top: 10px; }
+        .loading { text-align: center; padding: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Pricency</h1>
-    <div class="profile-tag">נוצר על ידי מיכאל</div>
-</header>
+    <header class="header">
+        <h1>Pricency</h1>
+        <div style="color: #666;">נוצר על ידי מיכאל</div>
+    </header>
 
-<div class="container">
-    <div class="search-box">
-        <input type="text" id="productInput" placeholder="איזה מוצר לחפש לך?">
-        <button class="btn-search" onclick="searchPrice()">חפש מחיר אמיתי</button>
-    </div>
+    <main class="main-content">
+        <section class="search-card">
+            <input type="text" id="userQuery" placeholder="איזה מוצר לחפש לך?">
+            <button class="btn-search" onclick="runBrain()">חפש מחיר אמיתי</button>
+        </section>
 
-    <div id="results" class="results"></div>
+        <div id="resultsList" class="results-container"></div>
 
-    <div class="donation-box">
-        <h3>רוצים לתמוך במיכאל?</h3>
-        <p>התרומה שלכם עוזרת לנו להמשיך לפתח את הפרויקט</p>
-        <a href="https://www.paypal.com/donate/?business=michael.project.donations@gmail.com&no_recurring=0&currency_code=ILS" target="_blank" class="paypal-button">
-            לתרומה מאובטחת ב-PayPal
-        </a>
-    </div>
-</div>
+        <section class="footer-card">
+            <h3>רוצים לתמוך במיכאל?</h3>
+            <a href="https://paypal.me/iareah" target="_blank" class="btn-donate">לתרומה ב-PayPal</a>
+        </section>
+    </main>
 
-<footer>
-    © כל הזכויות שמורות למיכאל
-</footer>
+    <script>
+        async function runBrain() {
+            const query = document.getElementById('userQuery').value;
+            const resultsList = document.getElementById('resultsList');
+            const apiKey = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
 
-<script>
-    function searchPrice() {
-        const item = document.getElementById('productInput').value;
-        const res = document.getElementById('results');
-        if(!item) return alert("הכנס מוצר לחיפוש");
-        res.innerHTML = "<p>מתחבר למאגרי מידע...</p>";
-        setTimeout(() => {
-            const data = [
-                {s: "AliExpress", p: "₪" + (Math.random()*50 + 10).toFixed(2)},
-                {s: "Amazon", p: "₪" + (Math.random()*70 + 30).toFixed(2)},
-                {s: "eBay", p: "₪" + (Math.random()*40 + 20).toFixed(2)}
-            ];
-            res.innerHTML = "";
-            data.forEach(d => {
-                res.innerHTML += `<div class="store-card"><span>${d.s}</span><span class="price">${d.p}</span></div>`;
-            });
-        }, 1200);
-    }
-</script>
+            if (!query) return;
 
+            resultsList.innerHTML = "<div class='loading'>Pricency סורק מחירים אמיתיים...</div>";
+
+            try {
+                const response = await fetch(`https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&hl=he&gl=il&api_key=${apiKey}`);
+                const data = await response.json();
+
+                if (!data.shopping_results) {
+                    resultsList.innerHTML = "<p>לא נמצאו תוצאות. נסה חיפוש אחר.</p>";
+                    return;
+                }
+
+                // הפואנטה: מיון מהזול ליקר
+                const sorted = data.shopping_results.sort((a, b) => a.extracted_price - b.extracted_price);
+
+                resultsList.innerHTML = "";
+                sorted.slice(0, 10).forEach((item, index) => {
+                    const isCheapest = index === 0;
+                    const card = document.createElement('div');
+                    card.className = `product-item ${isCheapest ? 'cheapest' : ''}`;
+                    card.innerHTML = `
+                        <div style="font-weight:bold; font-size:18px;">${isCheapest ? '🏆 ' : ''}${item.title}</div>
+                        <div style="color:#666; font-size:14px;">חנות: ${item.source}</div>
+                        <div class="price-tag">₪${item.extracted_price}</div>
+                        <a href="${item.link}" target="_blank" class="buy-link ${isCheapest ? 'cheapest-btn' : ''}">
+                            ${isCheapest ? 'המחיר הכי זול - קנה עכשיו' : 'בדוק בחנות'}
+                        </a>
+                    `;
+                    resultsList.appendChild(card);
+                });
+            } catch (e) {
+                resultsList.innerHTML = "<p>שגיאה בחיבור לנתונים. ודא שהמפתח תקין.</p>";
+            }
+        }
+    </script>
 </body>
 </html>
