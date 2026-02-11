@@ -33,37 +33,30 @@
         <h1>CheckMate</h1>
         <div class="subtitle">נוצר על ידי מיכאל - חיפוש עולמי</div>
     </header>
-
     <main class="main-content">
         <section class="search-card">
             <input type="text" id="userQuery" placeholder="חפש מוצר בארץ ובעולם...">
             <button class="btn-search" onclick="runBrain()">חפש עכשיו</button>
         </section>
-
         <div id="loader" class="loading">
             <div class="spinner"></div>
             <p>המוח של מיכאל סורק את כל העולם...</p>
         </div>
-
         <div id="resultsList" class="results-container"></div>
     </main>
-
     <footer class="footer">
         <p>© כל הזכויות שמורות למיכאל</p>
         <p>נהניתם? תמכו בפיתוח המערכת</p>
         <a href="https://paypal.me/iareah" target="_blank" class="btn-donate">תרומה ב-PayPal</a>
     </footer>
-
     <script>
         function runBrain() {
             const query = document.getElementById('userQuery').value;
             const resultsList = document.getElementById('resultsList');
             const loader = document.getElementById('loader');
-
             if (!query) { alert("נא להזין שם מוצר"); return; }
             resultsList.innerHTML = "";
             loader.style.display = "block";
-
             setTimeout(() => {
                 loader.style.display = "none";
                 const stores = [
