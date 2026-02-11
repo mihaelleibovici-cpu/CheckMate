@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CheckMate Global - נוצר על ידי מיכאל</title>
+    <title>Pricency - איתור מחירים חכם על ידי מיכאל</title>
     <style>
         :root { --primary: #007bff; --success: #28a745; --dark: #343a40; --bg: #f8f9fa; --paypal: #ffc107; }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; direction: rtl; }
         .header { background: var(--primary); color: white; padding: 40px 20px; text-align: center; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .header h1 { margin: 0; font-size: 38px; font-weight: 900; }
+        .header h1 { margin: 0; font-size: 38px; font-weight: 900; letter-spacing: 1px; }
         .header .subtitle { margin-top: 5px; font-size: 18px; opacity: 0.9; }
         .main-content { flex: 1; padding: 20px; max-width: 500px; margin: auto; width: 100%; box-sizing: border-box; }
         .search-card { background: white; padding: 25px; border-radius: 25px; margin-top: -50px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
@@ -30,8 +30,8 @@
 </head>
 <body>
     <header class="header">
-        <h1>CheckMate</h1>
-        <div class="subtitle">נוצר על ידי מיכאל - חיפוש עולמי</div>
+        <h1>Pricency</h1>
+        <div class="subtitle">נוצר על ידי מיכאל - איתור מחירים חכם</div>
     </header>
     <main class="main-content">
         <section class="search-card">
@@ -40,13 +40,13 @@
         </section>
         <div id="loader" class="loading">
             <div class="spinner"></div>
-            <p>המוח של מיכאל סורק את כל העולם...</p>
+            <p>המוח של מיכאל סורק את מחירי השוק...</p>
         </div>
         <div id="resultsList" class="results-container"></div>
     </main>
     <footer class="footer">
         <p>© כל הזכויות שמורות למיכאל</p>
-        <p>נהניתם? תמכו בפיתוח המערכת</p>
+        <p>נהניתם מהחיסכון? תמכו בפיתוח המערכת</p>
         <a href="https://paypal.me/iareah" target="_blank" class="btn-donate">תרומה ב-PayPal</a>
     </footer>
     <script>
