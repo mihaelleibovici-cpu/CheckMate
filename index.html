@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pricency - איתור מחירים חכם על ידי מיכאל</title>
+    <title>Pricency - איתור מחירים חכם</title>
     <style>
         :root { --primary: #007bff; --success: #28a745; --dark: #343a40; --bg: #f8f9fa; --paypal: #ffc107; }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; direction: rtl; }
@@ -17,83 +17,9 @@
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-bottom: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 10px; }
         .cheapest { border-right-color: var(--success); background: #f0fff4; border: 1px solid var(--success); }
         .product-header { display: flex; justify-content: space-between; align-items: center; }
-        .product-img { width: 70px; height: 70px; object-fit: contain; }
+        .product-img { width: 70px; height: 70px; object-fit: contain; border-radius: 10px; }
         .price-tag { color: var(--success); font-size: 24px; font-weight: 800; }
         .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; }
         .footer { background: var(--dark); color: white; padding: 30px 20px; text-align: center; margin-top: 40px; }
         .loading { text-align: center; display: none; margin: 20px 0; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-</head>
-<body>
-    <header class="header">
-        <h1>Pricency</h1>
-        <div class="subtitle">נוצר על ידי מיכאל - איתור מחירים חכם</div>
-    </header>
-    <main class="main-content">
-        <section class="search-card">
-            <input type="text" id="userQuery" placeholder="חפש מוצר...">
-            <button class="btn-search" onclick="runBrain()">חפש עכשיו</button>
-        </section>
-        <div id="loader" class="loading">
-            <div class="spinner"></div>
-            <p>המוח של מיכאל סורק מחירים...</p>
-        </div>
-        <div id="resultsList" class="results-container"></div>
-    </main>
-    <footer class="footer">
-        <p>© כל הזכויות שמורות למיכאל</p>
-    </footer>
-
-    <script>
-        async function runBrain() {
-            const query = document.getElementById('userQuery').value;
-            const resultsList = document.getElementById('resultsList');
-            const loader = document.getElementById('loader');
-            // המפתח שלך מעודכן כאן
-            const apiKey = '48496d76c800255d0d804ca2ebecf65a1a126329658639557032cae83d9f87cb';
-
-            if (!query) { alert("נא להזין שם מוצר"); return; }
-            
-            resultsList.innerHTML = "";
-            loader.style.display = "block";
-
-            // שימוש במתווך כדי לעקוף את חסימת ה-CORS
-            const proxyUrl = "https://corsproxy.io/?";
-            const targetUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&hl=he&gl=il&api_key=${apiKey}`;
-
-            try {
-                const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
-                const data = await response.json();
-                
-                loader.style.display = "none";
-
-                if (data.shopping_results) {
-                    data.shopping_results.slice(0, 6).forEach((item, index) => {
-                        const isCheapest = index === 0;
-                        const card = document.createElement('div');
-                        card.className = `product-item ${isCheapest ? 'cheapest' : ''}`;
-                        card.innerHTML = `
-                            <div class="product-header">
-                                <img src="${item.thumbnail}" class="product-img">
-                                <div style="flex:1; padding-right:10px;">
-                                    <strong>${item.source}</strong><br>
-                                    <small>${item.title.substring(0, 40)}...</small>
-                                </div>
-                                <div class="price-tag">${item.price}</div>
-                            </div>
-                            <a href="${item.link}" target="_blank" class="buy-link">לקנייה</a>`;
-                        resultsList.appendChild(card);
-                    });
-                } else {
-                    resultsList.innerHTML = "<p>לא נמצאו תוצאות.</p>";
-                }
-            } catch (error) {
-                loader.style.display = "none";
-                alert("שגיאה בחיבור. וודא שאישרת את החשבון ב-SerpApi (מייל וטלפון).");
-            }
-        }
-    </script>
-</body>
-</html>
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4
