@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base target="_top">
     <title>Pricency</title>
     <style>
         :root { --primary: #3b82f6; --success: #28a745; --dark: #2d2d2d; --bg: #f8f9fa; --paypal: #ffc107; }
@@ -17,7 +16,7 @@
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-top: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: right; }
         .cheapest { border: 2px solid var(--success) !important; border-right: 8px solid var(--success) !important; background: #f0fff4; }
         .price-tag { color: var(--success); font-size: 32px; font-weight: 800; display: block; margin: 10px 0; }
-        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; box-sizing: border-box; cursor: pointer; font-size: 18px; border: none; }
+        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; box-sizing: border-box; font-size: 18px; }
         .cheapest .buy-link { background: var(--success); }
         .footer { background: var(--dark); color: white; padding: 40px 20px; text-align: center; margin-top: 30px; }
         .btn-donate { background: var(--paypal); color: #000; padding: 15px 40px; border-radius: 12px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; font-size: 20px; }
@@ -47,11 +46,12 @@
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>סורק מחירים... רק רגע</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים...</p>";
 
             const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
             
             try {
+                // חזרה לשיטת ה-fetch שעבדה לך מצוין בחיפושים
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}`);
                 const data = await response.json();
                 const results = JSON.parse(data.contents);
@@ -66,12 +66,14 @@
                                 <strong>${item.title}</strong>
                                 <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
                                 <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                <button onclick="window.top.location.href='${item.link}'" class="buy-link">עבור לחנות</button>
+                                <a href="${item.link}" target="_top" class="buy-link">עבור לחנות</a>
                             </div>`;
                     });
+                } else {
+                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות.</p>";
                 }
             } catch (e) {
-                res.innerHTML = "<p style='text-align:center;'>שגיאה בטעינה. נסה שוב.</p>";
+                res.innerHTML = "<p style='text-align:center;'>שגיאת חיבור. נסה שוב בעוד רגע.</p>";
             }
         }
     </script>
