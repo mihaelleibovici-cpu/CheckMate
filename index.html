@@ -12,17 +12,14 @@
         .main { padding: 20px; max-width: 500px; margin: auto; }
         .search-box { background: white; padding: 20px; border-radius: 20px; margin-top: -45px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         input { width: 90%; padding: 16px; border: 2px solid #ddd; border-radius: 12px; font-size: 18px; margin-bottom: 15px; outline: none; }
-        button { width: 95%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:active { transform: scale(0.98); background: #0056b3; }
+        button { width: 95%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; }
         .loader { display: none; margin: 25px; font-weight: bold; color: var(--primary); }
         .results { margin-top: 25px; text-align: right; }
         .item { background: white; padding: 15px; border-radius: 18px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-right: 6px solid var(--primary); }
         .item img { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; }
         .item-info { flex: 1; }
-        .item-info strong { display: block; color: var(--primary); font-size: 14px; margin-bottom: 4px; }
-        .item-info span { font-size: 16px; font-weight: 600; line-height: 1.3; display: block; }
         .price { color: var(--success); font-size: 22px; font-weight: 800; margin-top: 8px; }
-        .link { display: block; margin-top: 10px; background: var(--dark); color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; }
+        .link { display: block; margin-top: 10px; background: var(--dark); color: white; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: bold; }
         .footer { margin-top: 40px; padding: 20px; font-size: 14px; color: #777; }
     </style>
 </head>
@@ -33,7 +30,7 @@
     </div>
     <div class="main">
         <div class="search-box">
-            <input type="text" id="query" placeholder="חפש מוצר (למשל: iPhone 16)">
+            <input type="text" id="query" placeholder="חפש מוצר (למשל: iPhone 15)">
             <button onclick="search()">חפש עכשיו</button>
         </div>
         <div id="loading" class="loader">המוח של מיכאל סורק את הרשת...</div>
@@ -49,11 +46,11 @@
             const key = '48496d76c800255d0d804ca2ebecf65a1a126329658639557032cae83d9f87cb';
 
             if (!q) { alert("נא להזין שם מוצר"); return; }
-            
             resDiv.innerHTML = "";
             loader.style.display = "block";
 
             try {
+                // שימוש במנוע חיפוש ישיר
                 const target = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&api_key=${key}&hl=he&gl=il`;
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
                 const json = await response.json();
@@ -61,13 +58,13 @@
 
                 loader.style.display = "none";
 
-                if (data.shopping_results && data.shopping_results.length > 0) {
+                if (data.shopping_results) {
                     data.shopping_results.slice(0, 10).forEach(item => {
                         resDiv.innerHTML += `
                             <div class="item">
-                                <img src="${item.thumbnail}" onerror="this.src='https://via.placeholder.com/75?text=No+Img'">
+                                <img src="${item.thumbnail}" onerror="this.src='https://via.placeholder.com/75'">
                                 <div class="item-info">
-                                    <strong>${item.source}</strong>
+                                    <strong>${item.source}</strong><br>
                                     <span>${item.title.substring(0, 50)}...</span>
                                     <div class="price">${item.price}</div>
                                     <a href="${item.link}" target="_blank" class="link">לקנייה בחנות</a>
@@ -75,11 +72,11 @@
                             </div>`;
                     });
                 } else {
-                    resDiv.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. וודא שאישרת את החשבון ב-SerpApi (כולל כפתור Subscribe).</p>";
+                    resDiv.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. וודא שלחצת על Subscribe ב-SerpApi.</p>";
                 }
             } catch (e) {
                 loader.style.display = "none";
-                alert("שגיאת תקשורת. נסה שוב בעוד כמה שניות.");
+                alert("שגיאת תקשורת. נסה שוב בעוד רגע.");
             }
         }
     </script>
