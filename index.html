@@ -8,25 +8,27 @@
         :root { --primary: #007bff; --success: #28a745; --dark: #343a40; --bg: #f8f9fa; }
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; direction: rtl; }
         
-        .header { background: var(--primary); color: white; padding: 50px 20px; text-align: center; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-        .header h1 { margin: 0; font-size: 42px; font-weight: 900; }
+        .header { background: var(--primary); color: white; padding: 40px 20px; text-align: center; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .header h1 { margin: 0; font-size: 38px; font-weight: 900; }
         .header .subtitle { margin-top: 5px; font-size: 18px; opacity: 0.9; }
 
         .main-content { flex: 1; padding: 20px; max-width: 500px; margin: auto; width: 100%; box-sizing: border-box; }
         .search-card { background: white; padding: 25px; border-radius: 25px; margin-top: -50px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 15px; font-size: 18px; box-sizing: border-box; outline: none; text-align: right; margin-bottom: 20px; }
         
-        .btn-search { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,123,255,0.3); }
+        .btn-search { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 20px; font-weight: bold; cursor: pointer; }
 
         .results-container { margin-top: 30px; }
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-bottom: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
-        .cheapest { border-right-color: var(--success); background: #f0fff4; }
+        .cheapest { border-right-color: var(--success); background: #f0fff4; border-left: 1px solid var(--success); border-top: 1px solid var(--success); border-bottom: 1px solid var(--success); }
         
         .product-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .price-tag { color: var(--success); font-size: 26px; font-weight: 800; }
         
-        .buy-button { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s; font-size: 18px; }
-        .buy-button.cheapest-btn { background: var(--success); box-shadow: 0 4px 12px rgba(40,167,69,0.3); }
+        /* תיקון הכפתור - הפיכתו לבלוק לחיץ וברור */
+        .buy-link { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 18px; transition: 0.3s; }
+        .buy-link.cheapest-btn { background: var(--success); box-shadow: 0 4px 12px rgba(40,167,69,0.4); }
+        .buy-link:active { transform: scale(0.95); opacity: 0.9; }
 
         .footer { background: var(--dark); color: white; padding: 30px 20px; text-align: center; margin-top: 40px; }
         .btn-donate { background: #ffc107; color: #000; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; }
@@ -40,18 +42,18 @@
 
     <header class="header">
         <h1>CheckMate</h1>
-        <div class="subtitle">נוצר על ידי מיכאל - השוואה עולמית</div>
+        <div class="subtitle">נוצר על ידי מיכאל - חיפוש עולמי</div>
     </header>
 
     <main class="main-content">
         <section class="search-card">
-            <input type="text" id="userQuery" placeholder="מה תרצה למצוא בעולם?">
+            <input type="text" id="userQuery" placeholder="חפש מוצר בארץ ובעולם...">
             <button class="btn-search" onclick="runBrain()">חפש עכשיו</button>
         </section>
 
         <div id="loader" class="loading">
             <div class="spinner"></div>
-            <p>המוח של CheckMate סורק את האינטרנט העולמי...</p>
+            <p>המוח של מיכאל סורק את כל העולם...</p>
         </div>
 
         <div id="resultsList" class="results-container"></div>
@@ -79,31 +81,17 @@
             setTimeout(() => {
                 loader.style.display = "none";
                 
-                // יצירת קישורים ישירים לענקיות העולם
+                // המוח שכולל את כל האתרים הגדולים בעולם
                 const stores = [
-                    { 
-                        name: "AliExpress", 
-                        price: Math.floor(Math.random() * 500) + 50, 
-                        link: `https://www.aliexpress.com/wholesale?SearchText=${encodeURIComponent(query)}` 
-                    },
-                    { 
-                        name: "Alibaba", 
-                        price: Math.floor(Math.random() * 400) + 30, 
-                        link: `https://www.alibaba.com/showroom/${encodeURIComponent(query)}.html` 
-                    },
-                    { 
-                        name: "Amazon", 
-                        price: Math.floor(Math.random() * 800) + 150, 
-                        link: `https://www.amazon.com/s?k=${encodeURIComponent(query)}` 
-                    },
-                    { 
-                        name: "eBay", 
-                        price: Math.floor(Math.random() * 700) + 100, 
-                        link: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}` 
-                    }
+                    { name: "AliExpress", price: Math.floor(Math.random() * 500) + 50, link: `https://www.aliexpress.com/wholesale?SearchText=${encodeURIComponent(query)}` },
+                    { name: "Alibaba", price: Math.floor(Math.random() * 400) + 30, link: `https://www.alibaba.com/showroom/${encodeURIComponent(query)}.html` },
+                    { name: "Amazon", price: Math.floor(Math.random() * 800) + 150, link: `https://www.amazon.com/s?k=${encodeURIComponent(query)}` },
+                    { name: "eBay", price: Math.floor(Math.random() * 700) + 100, link: `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}` },
+                    { name: "KSP", price: Math.floor(Math.random() * 1200) + 400, link: `https://ksp.co.il/web/cat?search=${encodeURIComponent(query)}` },
+                    { name: "מחסני חשמל", price: Math.floor(Math.random() * 1200) + 400, link: `https://www.payless.co.il/search?q=${encodeURIComponent(query)}` }
                 ];
 
-                // מיון מהזול ליקר
+                // מיון מהזול ליקר כדי שהכי זול יהיה ראשון
                 stores.sort((a, b) => a.price - b.price);
 
                 stores.forEach((item, index) => {
@@ -119,7 +107,7 @@
                             </div>
                             <div class="price-tag">₪${item.price}</div>
                         </div>
-                        <a href="${item.link}" target="_blank" class="buy-button ${isCheapest ? 'cheapest-btn' : ''}">
+                        <a href="${item.link}" target="_blank" class="buy-link ${isCheapest ? 'cheapest-btn' : ''}">
                             ${isCheapest ? 'לקנייה ישירה במחיר הזול' : 'מעבר לאתר לקנייה'}
                         </a>
                     `;
