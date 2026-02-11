@@ -46,34 +46,44 @@
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים בכמה שרתים במקביל...</p>";
 
-            try {
-                // שימוש ב-Proxy החזק ביותר עם מנגנון רענון (Cache-Busting)
-                const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api)}&_=${new Date().getTime()}`);
-                const data = await response.json();
-                const results = JSON.parse(data.contents);
+            const api = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&hl=he&gl=il&api_key=${key}`;
+            
+            // מנסה 3 שרתים שונים - הראשון שתופס מציג את התוצאה
+            const proxies = [
+                `https://api.allorigins.win/get?url=${encodeURIComponent(api)}`,
+                `https://corsproxy.io/?${encodeURIComponent(api)}`,
+                `https://api.codetabs.com/v1/proxy?url=${encodeURIComponent(api)}`
+            ];
 
-                if (results.shopping_results) {
-                    const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
-                    res.innerHTML = "";
-                    sorted.slice(0, 10).forEach((item, i) => {
-                        const isMin = i === 0;
-                        res.innerHTML += `
-                            <div class="product-item ${isMin ? 'cheapest' : ''}">
-                                <strong>${item.title}</strong>
-                                <div style="color:#666; font-size:14px; margin-top:5px;">חנות: ${item.source}</div>
-                                <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                <a href="${item.link}" target="_blank" class="buy-link">עבור לחנות</a>
-                            </div>`;
-                    });
-                } else {
-                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה שם מוצר אחר.</p>";
+            for (let url of proxies) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    const results = data.contents ? JSON.parse(data.contents) : data;
+
+                    if (results.shopping_results) {
+                        const sorted = results.shopping_results.sort((a, b) => (a.extracted_price || 99999) - (b.extracted_price || 99999));
+                        res.innerHTML = "";
+                        sorted.slice(0, 10).forEach((item, i) => {
+                            const isMin = i === 0;
+                            res.innerHTML += `
+                                <div class="product-item ${isMin ? 'cheapest' : ''}">
+                                    <strong>${item.title}</strong>
+                                    <div style="color:#666; font-size:14px; margin-top:5px;">חנות: ${item.source}</div>
+                                    <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
+                                    <a href="${item.link}" target="_blank" class="buy-link">עבור לחנות</a>
+                                </div>`;
+                        });
+                        return; // הצלחנו! עוצרים את החיפוש
+                    }
+                } catch (e) {
+                    console.log("שרת נכשל, מנסה את הבא...");
                 }
-            } catch (e) {
-                res.innerHTML = "<p style='text-align:center;'>שגיאת חיבור זמנית. לחץ שוב על חפש.</p>";
             }
+            res.innerHTML = "<p style='text-align:center;'>כל השרתים עמוסים כרגע. נסה שוב בעוד 5 שניות.</p>";
         }
     </script>
 </body>
