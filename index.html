@@ -46,6 +46,7 @@
             loader.style.display = "block";
 
             try {
+                // שימוש במתווך עוקף חסימות אבטחה
                 const target = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(q)}&api_key=${key}&hl=he&gl=il`;
                 const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
                 const json = await response.json();
@@ -57,21 +58,23 @@
                     data.shopping_results.slice(0, 10).forEach(item => {
                         resDiv.innerHTML += `
                             <div class="item">
-                                <img src="${item.thumbnail}" onerror="this.src='https://via.placeholder.com/75'">
+                                <img src="${item.thumbnail}">
                                 <div style="flex:1">
                                     <strong>${item.source}</strong><br>
-                                    <span>${item.title.substring(0, 40)}...</span>
+                                    <span style="font-size:14px;">${item.title.substring(0, 45)}...</span>
                                     <div class="price">${item.price}</div>
                                     <a href="${item.link}" target="_blank" class="link">לקנייה</a>
                                 </div>
                             </div>`;
                     });
+                } else if (data.error) {
+                    resDiv.innerHTML = "<p>שגיאת שרת: " + data.error + "</p>";
                 } else {
-                    resDiv.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. וודא שלחצת על Subscribe ב-SerpApi.</p>";
+                    resDiv.innerHTML = "<p>לא נמצאו תוצאות. נסה מוצר אחר.</p>";
                 }
             } catch (e) {
                 loader.style.display = "none";
-                alert("שגיאה: וודא שאישרת מייל וטלפון ב-SerpApi.");
+                alert("מנוע החיפוש מתעורר. נסה ללחוץ שוב על 'חפש עכשיו' בעוד כמה שניות.");
             }
         }
     </script>
