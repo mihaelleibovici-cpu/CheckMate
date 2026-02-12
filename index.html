@@ -6,17 +6,17 @@
     <title>Pricency</title>
     <style>
         :root { --primary: #3b82f6; --success: #28a745; --dark: #2d2d2d; --bg: #f8f9fa; --paypal: #ffc107; }
-        body { font-family: system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 0; direction: rtl; }
+        body { font-family: system-ui, sans-serif; background-color: var(--bg); margin: 0; direction: rtl; }
         .header { background: var(--primary); color: white; padding: 50px 20px; text-align: center; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
         .header h1 { margin: 0; font-size: 48px; font-weight: bold; }
         .main-content { padding: 20px; max-width: 500px; margin: -60px auto 0; }
         .search-card { background: white; padding: 30px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
-        input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 15px; font-size: 20px; margin-bottom: 20px; text-align: center; box-sizing: border-box; outline: none; }
+        input { width: 100%; padding: 18px; border: 2px solid #eee; border-radius: 15px; font-size: 20px; margin-bottom: 20px; text-align: center; box-sizing: border-box; }
         .btn-search { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 15px; font-size: 22px; font-weight: bold; cursor: pointer; }
         .product-item { background: white; padding: 20px; border-radius: 18px; margin-top: 20px; border-right: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: right; }
         .cheapest { border: 2px solid var(--success) !important; border-right: 8px solid var(--success) !important; background: #f0fff4; }
         .price-tag { color: var(--success); font-size: 32px; font-weight: 800; display: block; margin: 10px 0; }
-        .buy-btn { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; -webkit-appearance: none; }
+        .buy-btn { display: block; width: 100%; text-align: center; background: var(--dark); color: white; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 18px; border: none; cursor: pointer; text-decoration: none; }
         .cheapest .buy-btn { background: var(--success); }
         .footer { background: var(--dark); color: white; padding: 40px 20px; text-align: center; margin-top: 30px; }
         .btn-donate { background: var(--paypal); color: #000; padding: 15px 40px; border-radius: 12px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; font-size: 20px; }
@@ -46,7 +46,7 @@
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>טוען מחירים בזמן אמת...</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים... מיד מציג</p>";
 
             const api = `https://corsproxy.io/?${encodeURIComponent('https://serpapi.com/search.json?engine=google_shopping&q=' + q + '&hl=he&gl=il&api_key=' + key)}`;
             
@@ -64,12 +64,14 @@
                                 <strong>${item.title}</strong>
                                 <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
                                 <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                <button onclick="top.location.href='${item.link}'" class="buy-btn">עבור לחנות</button>
+                                <button onclick="window.open('${item.link}', '_blank')" class="buy-btn">עבור לחנות</button>
                             </div>`;
                     });
+                } else {
+                    res.innerHTML = "<p style='text-align:center;'>לא נמצאו תוצאות. נסה מוצר אחר.</p>";
                 }
             } catch (e) {
-                res.innerHTML = "<p style='text-align:center;'>שגיאת חיבור. נסה שוב.</p>";
+                res.innerHTML = "<p style='text-align:center;'>שגיאת חיבור. נסה שוב בעוד רגע.</p>";
             }
         }
     </script>
