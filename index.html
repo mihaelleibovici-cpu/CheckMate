@@ -46,7 +46,7 @@
             const key = "f93468b7cf17169a9dd3584bc3c91fe10947b64b19e0cf52266a0aaa35775903";
             if (!q) return;
 
-            res.innerHTML = "<p style='text-align:center; padding:20px;'>טוען מחירים חיים...</p>";
+            res.innerHTML = "<p style='text-align:center; padding:20px;'>בודק מחירים חיים...</p>";
 
             const api = `https://corsproxy.io/?${encodeURIComponent('https://serpapi.com/search.json?engine=google_shopping&q=' + q + '&hl=he&gl=il&api_key=' + key)}`;
             
@@ -64,7 +64,7 @@
                                 <strong>${item.title}</strong>
                                 <div style="color:#666; font-size:15px; margin-top:5px;">חנות: ${item.source}</div>
                                 <div class="price-tag">₪${item.extracted_price || 'באתר'}</div>
-                                <a href="${item.link}" target="_blank" rel="noreferrer" class="buy-btn">עבור לחנות</a>
+                                <button onclick="window.location.assign('${item.link}')" class="buy-btn">עבור לחנות</button>
                             </div>`;
                     });
                 }
